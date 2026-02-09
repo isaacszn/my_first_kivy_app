@@ -5,21 +5,21 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
+
+    container:
+      image: kivy/buildozer
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Cache Buildozer
-      uses: actions/cache@v4
-      with:
-        path: |
-          ~/.buildozer
-          ~/.cache/pip
-        key: buildozer-${{ runner.os }}
+      - name: Build APK
+        run: |
+          buildozer android debug
 
-    - name: Build APK
-      uses: digreatbrian/buildozer-action@v2
-      with:
-        command: buildozer android debug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: apk
+          path: bin/*.apk
